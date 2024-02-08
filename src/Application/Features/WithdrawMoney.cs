@@ -17,7 +17,24 @@ namespace Application.Features
 
         public void Execute(Guid fromAccountId, decimal amount)
         {
-            // TODO:
+            var account = this.accountRepository.GetAccountById(fromAccountId);
+
+            var fromBalance = account.Balance - amount;
+            
+            if (fromBalance < 0m)
+            {
+                throw new InvalidOperationException("Insufficient funds to make withdraw");
+            }
+
+            if (fromBalance < 100m)
+            {
+                this.notificationService.NotifyFundsLow(account.User.Email);
+            }
+
+            account.Balance = account.Balance - amount;
+            account.Withdrawn = account.Withdrawn - amount;
+
+            this.accountRepository.Update(account);
         }
     }
 }
