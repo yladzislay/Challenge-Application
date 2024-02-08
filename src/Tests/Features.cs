@@ -9,83 +9,60 @@ namespace Tests
 {
     public class Features
     {
+        private readonly Guid _accountId = new Guid("6d97355d-748f-40a2-8443-09fcb6ec15fd");
+        private const decimal InitialBalance = 1000m;
+        private const string UserEmail = "test@example.com";
+
+        private readonly Mock<IAccountRepository> _mockAccountRepository;
+        private readonly Mock<INotificationService> _mockNotificationService;
+        private readonly Account _account;
+        private readonly WithdrawMoney _withdrawMoney;
+
+        public Features()
+        {
+            _mockAccountRepository = new Mock<IAccountRepository>();
+            _mockNotificationService = new Mock<INotificationService>();
+
+            _account = new Account
+            {
+                Id = _accountId,
+                Balance = InitialBalance,
+                User = new User { Email = UserEmail }
+            };
+            
+            _mockAccountRepository.Setup(repository => repository.GetAccountById(_accountId)).Returns(_account);
+            _withdrawMoney = new WithdrawMoney(_mockAccountRepository.Object, _mockNotificationService.Object);
+        }
+
         [Fact]
         public void WithdrawMoney_WithValidAmount_ShouldUpdateBalanceAndWithdrawn()
         {
-            var accountId = new System.Guid("6d97355d-748f-40a2-8443-09fcb6ec15fd");
-            var initialBalance = 1000m;
-            var withdrawalAmount = 500m;
-            var expectedBalance = initialBalance - withdrawalAmount;
+            const decimal withdrawalAmount = 500m;
+            const decimal expectedBalance = InitialBalance - withdrawalAmount;
 
-            var mockAccountRepository = new Mock<IAccountRepository>();
-            var mockNotificationService = new Mock<INotificationService>();
+            _withdrawMoney.Execute(_accountId, withdrawalAmount);
 
-            var account = new Account
-            {
-                Id = accountId,
-                Balance = initialBalance,
-                User = new User {Email = "test@example.com"}
-            };
-
-            mockAccountRepository.Setup(repository => repository.GetAccountById(accountId)).Returns(account);
-
-            var withdrawMoney = new WithdrawMoney(mockAccountRepository.Object, mockNotificationService.Object);
-
-            withdrawMoney.Execute(accountId, withdrawalAmount);
-
-            mockAccountRepository.Verify(repository => repository.Update(It.IsAny<Account>()), Times.Once);
-            Assert.Equal(expectedBalance, account.Balance);
-            Assert.Equal(-withdrawalAmount, account.Withdrawn);
+            _mockAccountRepository.Verify(repository => repository.Update(It.IsAny<Account>()), Times.Once);
+            Assert.Equal(expectedBalance, _account.Balance);
+            Assert.Equal(-withdrawalAmount, _account.Withdrawn);
         }
 
         [Fact]
         public void WithdrawMoney_WithInsufficientFunds_ShouldThrowException()
         {
-            var accountId = new System.Guid("6d97355d-748f-40a2-8443-09fcb6ec15fd");
-            var initialBalance = 100m;
-            var withdrawalAmount = 500m;
+            const decimal withdrawalAmount = 1100m;
 
-            var mockAccountRepository = new Mock<IAccountRepository>();
-            var mockNotificationService = new Mock<INotificationService>();
-
-            var account = new Account
-            {
-                Id = accountId,
-                Balance = initialBalance,
-                User = new User {Email = "test@example.com"}
-            };
-
-            mockAccountRepository.Setup(repository => repository.GetAccountById(accountId)).Returns(account);
-
-            var withdrawMoney = new WithdrawMoney(mockAccountRepository.Object, mockNotificationService.Object);
-
-            Assert.Throws<InvalidOperationException>(() => withdrawMoney.Execute(accountId, withdrawalAmount));
+            Assert.Throws<InvalidOperationException>(() => _withdrawMoney.Execute(_accountId, withdrawalAmount));
         }
 
         [Fact]
         public void WithdrawMoney_WithLowFunds_ShouldNotifyUser()
         {
-            var accountId = new System.Guid("6d97355d-748f-40a2-8443-09fcb6ec15fd");
-            var initialBalance = 150m;
-            var withdrawalAmount = 100m;
+            const decimal withdrawalAmount = 980m;
 
-            var mockAccountRepository = new Mock<IAccountRepository>();
-            var mockNotificationService = new Mock<INotificationService>();
+            _withdrawMoney.Execute(_accountId, withdrawalAmount);
 
-            var account = new Account
-            {
-                Id = accountId,
-                Balance = initialBalance,
-                User = new User {Email = "test@example.com"}
-            };
-
-            mockAccountRepository.Setup(repository => repository.GetAccountById(accountId)).Returns(account);
-
-            var withdrawMoney = new WithdrawMoney(mockAccountRepository.Object, mockNotificationService.Object);
-
-            withdrawMoney.Execute(accountId, withdrawalAmount);
-
-            mockNotificationService.Verify(service => service.NotifyFundsLow("test@example.com"), Times.Once);
+            _mockNotificationService.Verify(service => service.NotifyFundsLow(UserEmail), Times.Once);
         }
     }
 }
