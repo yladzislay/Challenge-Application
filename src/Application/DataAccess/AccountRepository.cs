@@ -18,7 +18,7 @@ namespace Application.DataAccess
             return _accounts.GetValueOrDefault(accountId);
         }
 
-        public void Update(Account account)
+        public void UpdateAccount(Account account)
         {
             if (_accounts.ContainsKey(account.Id))
             {

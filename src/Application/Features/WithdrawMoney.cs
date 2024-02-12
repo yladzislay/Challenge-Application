@@ -34,7 +34,7 @@ namespace Application.Features
             account.Balance = account.Balance - amount;
             account.Withdrawn = account.Withdrawn - amount;
 
-            this.accountRepository.Update(account);
+            this.accountRepository.UpdateAccount(account);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace Tests
 
             _withdrawMoney.Execute(_accountId, withdrawalAmount);
 
-            _mockAccountRepository.Verify(repository => repository.Update(It.IsAny<Account>()), Times.Once);
+            _mockAccountRepository.Verify(repository => repository.UpdateAccount(It.IsAny<Account>()), Times.Once);
             Assert.Equal(expectedBalance, _account.Balance);
             Assert.Equal(-withdrawalAmount, _account.Withdrawn);
         }

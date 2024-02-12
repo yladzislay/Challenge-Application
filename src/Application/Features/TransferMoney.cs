@@ -50,8 +50,8 @@ namespace Application.Features
             recipientAccount.Balance = recipientAccount.Balance + transferAmount;
             recipientAccount.Transferred = recipientAccount.Transferred + transferAmount;
 
-            _accountRepository.Update(senderAccount);
-            _accountRepository.Update(recipientAccount);
+            _accountRepository.UpdateAccount(senderAccount);
+            _accountRepository.UpdateAccount(recipientAccount);
         }
     }
 }

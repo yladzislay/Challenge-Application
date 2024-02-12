@@ -7,6 +7,6 @@ namespace Application.DataAccess
     {
         Account GetAccountById(Guid accountId);
 
-        void Update(Account account);
+        void UpdateAccount(Account account);
     }
 }
