@@ -2,10 +2,11 @@ using Application.DataAccess;
 using Application.Domain;
 using Application.Domain.Services;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Tests
 {
-    public class ScenarioTests
+    public class ScenarioTests(ITestOutputHelper testOutputHelper)
     {
         [Fact]
         public void RandomMoneyTransferUntilAllLimitsExceededScenario()
@@ -33,6 +34,7 @@ namespace Tests
             var accountRepository = new AccountRepository(accounts.ToDictionary(acc => acc.Id));
             var notifications = new NotificationService();
             var accountOperations = new AccountOperationsService(accountRepository, notifications);
+            var operationsCounter = 0;
 
             // Act
             while (!AllLimitsExceeded(accounts))
@@ -48,6 +50,7 @@ namespace Tests
                 {
                     var amount = random.Next(1, (int)maxTransferAmount);
                     accountOperations.Transfer(sender, recipient, amount);
+                    operationsCounter++;
                 }
             }
 
@@ -62,6 +65,9 @@ namespace Tests
             
             Assert.True(accountsWithNotExceededLimitsCount <= 1,
                     $"There are more then one ({accountsWithNotExceededLimitsCount}) accounts with positive balance when not all limits are exceeded.");
+            
+            // Output
+            testOutputHelper.WriteLine($"Total operations performed: {operationsCounter}");
         }
 
         private static bool AllLimitsExceeded(IEnumerable<Account> accounts)
