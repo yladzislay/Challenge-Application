@@ -70,6 +70,28 @@ namespace Application.Domain.Services
                               + $"-[Notifying user]: {emailAddress}");
         }
 
+        public void NotifyApproachingReceiveLimit(string emailAddress, decimal currentTransferAmount, decimal limit)
+        {
+            Console.WriteLine("[Notification]: Approaching receive limit!"
+                              + Environment.NewLine
+                              + $"-[Current transfer amount]: {currentTransferAmount}"
+                              + Environment.NewLine
+                              + $"-[Limit]: {limit} "
+                              + Environment.NewLine
+                              + $"-[Notifying user]: {emailAddress}");
+        }
+
+        public void NotifyExceededReceiveLimit(string emailAddress, decimal currentTransferAmount, decimal limit)
+        {
+            Console.WriteLine("[Notification]: Exceeded receive limit!"
+                              + Environment.NewLine
+                              + $"-[Current transfer amount]: {currentTransferAmount}"
+                              + Environment.NewLine
+                              + $"-[Limit]: {limit} "
+                              + Environment.NewLine
+                              + $"-[Notifying user]: {emailAddress}");
+        }
+
         public void NotifyWithdrawalSuccess(string emailAddress, decimal amount)
         {
             Console.WriteLine("[Notification]: Withdrawal successful!"

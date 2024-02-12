@@ -10,6 +10,9 @@ namespace Application.Domain.Services
 
         void NotifyApproachingTransferLimit(string emailAddress, decimal currentTransferAmount, decimal limit);
         void NotifyExceededTransferLimit(string emailAddress, decimal currentTransferAmount, decimal limit);
+        
+        void NotifyApproachingReceiveLimit(string emailAddress, decimal currentTransferAmount, decimal limit);
+        void NotifyExceededReceiveLimit(string emailAddress, decimal currentTransferAmount, decimal limit);
 
         void NotifyWithdrawalSuccess(string emailAddress, decimal amount);
         void NotifyDepositSuccess(string emailAddress, decimal amount);
