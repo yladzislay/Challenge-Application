@@ -28,5 +28,25 @@ namespace Application.Domain.Services
             => HasSufficientBalance(sender, amount) 
                && IsNotExceedingTransferLimit(sender, amount) 
                && IsNotExceedingReceiveLimit(recipient, amount);
+        
+        public static bool IsApproachingWithdrawLimit(Account account)
+        {
+            return account.Withdrawn >= AccountOperationsLimits.WithdrawLimit * 0.8m;
+        }
+
+        public static bool IsApproachingDepositLimit(Account account)
+        {
+            return account.Deposited >= AccountOperationsLimits.DepositLimit * 0.8m;
+        }
+
+        public static bool IsApproachingTransferLimit(Account account)
+        {
+            return account.Transferred >= AccountOperationsLimits.TransferLimit * 0.8m;
+        }
+
+        public static bool IsApproachingReceiveLimit(Account account)
+        {
+            return account.Received >= AccountOperationsLimits.ReceiveLimit * 0.8m;
+        }
     }
 }
