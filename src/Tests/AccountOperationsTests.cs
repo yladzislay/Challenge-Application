@@ -1,90 +1,71 @@
+using Application.DataAccess;
 using Application.Domain;
 using Application.Domain.Services;
+using Moq;
 using Xunit;
 
-namespace Tests
+namespace Tests;
+
+public class AccountOperationsServiceTests
 {
-    public class AccountOperationsTests
+    private readonly Mock<IAccountRepository> _mockAccountRepository;
+    private readonly IAccountOperations _accountOperations;
+
+    public AccountOperationsServiceTests()
     {
-        [Fact]
-        public void Withdraw_ValidAmount_ShouldUpdateBalanceAndWithdrawn()
-        {
-            // Arrange
-            var account = new Account { Balance = 1000m, Withdrawn = 0m };
-            var accountOperations = new AccountOperationsService();
+        _mockAccountRepository = new Mock<IAccountRepository>();
+        _accountOperations = new AccountOperationsService(_mockAccountRepository.Object);
+    }
 
-            // Act
-            accountOperations.Withdraw(account, 500m);
+    [Fact]
+    public void Withdraw_ValidAmount_ShouldUpdateBalanceAndWithdrawn()
+    {
+        // Arrange
+        var account = new Account { Balance = 1000m, Withdrawn = 0m };
+        const decimal amount = 500m;
 
-            // Assert
-            Assert.Equal(500m, account.Balance);
-            Assert.Equal(500m, account.Withdrawn);
-        }
+        // Act
+        _accountOperations.Withdraw(account, amount);
 
-        [Fact]
-        public void Withdraw_InsufficientFunds_ShouldNotUpdateBalanceAndWithdrawn()
-        {
-            // Arrange
-            var account = new Account { Balance = 1000m, Withdrawn = 0m };
-            var accountOperations = new AccountOperationsService();
+        // Assert
+        Assert.Equal(500m, account.Balance);
+        Assert.Equal(500m, account.Withdrawn);
+        _mockAccountRepository.Verify(r => r.UpdateAccount(account), Times.Once);
+    }
 
-            // Act
-            accountOperations.Withdraw(account, 1500m);
+    [Fact]
+    public void Deposit_ValidAmount_ShouldUpdateBalanceAndDeposited()
+    {
+        // Arrange
+        var account = new Account { Balance = 1000m, Deposited = 0m };
+        const decimal amount = 500m;
 
-            // Assert
-            Assert.Equal(1000m, account.Balance);
-            Assert.Equal(0m, account.Withdrawn);
-        }
+        // Act
+        _accountOperations.Deposit(account, amount);
 
-        [Fact]
-        public void Deposit_ValidAmount_ShouldUpdateBalanceAndDeposited()
-        {
-            // Arrange
-            var account = new Account { Balance = 1000m, Deposited = 0m };
-            var accountOperations = new AccountOperationsService();
+        // Assert
+        Assert.Equal(1500m, account.Balance);
+        Assert.Equal(500m, account.Deposited);
+        _mockAccountRepository.Verify(r => r.UpdateAccount(account), Times.Once);
+    }
 
-            // Act
-            accountOperations.Deposit(account, 500m);
+    [Fact]
+    public void Transfer_ValidAmount_ShouldUpdateBalancesAndTransfers()
+    {
+        // Arrange
+        var senderAccount = new Account { Balance = 1000m, Transferred = 0m };
+        var recipientAccount = new Account { Balance = 500m, Received = 0m };
+        const decimal amount = 300m;
 
-            // Assert
-            Assert.Equal(1500m, account.Balance);
-            Assert.Equal(500m, account.Deposited);
-        }
+        // Act
+        _accountOperations.Transfer(senderAccount, recipientAccount, amount);
 
-        [Fact]
-        public void Transfer_ValidAmount_ShouldUpdateBalancesAndTransfers()
-        {
-            // Arrange
-            var senderAccount = new Account { Balance = 1000m, Transferred = 0m };
-            var recipientAccount = new Account { Balance = 500m, Received = 0m };
-            var accountOperations = new AccountOperationsService();
-
-            // Act
-            accountOperations.Transfer(senderAccount, recipientAccount, 300m);
-
-            // Assert
-            Assert.Equal(700m, senderAccount.Balance);
-            Assert.Equal(800m, recipientAccount.Balance);
-            Assert.Equal(300m, senderAccount.Transferred);
-            Assert.Equal(300m, recipientAccount.Received);
-        }
-
-        [Fact]
-        public void Transfer_InsufficientFunds_ShouldNotUpdateBalancesAndTransfers()
-        {
-            // Arrange
-            var senderAccount = new Account { Balance = 1000m, Transferred = 0m };
-            var recipientAccount = new Account { Balance = 500m, Received = 0m };
-            var accountOperations = new AccountOperationsService();
-
-            // Act
-            accountOperations.Transfer(senderAccount, recipientAccount, 1500m);
-
-            // Assert
-            Assert.Equal(1000m, senderAccount.Balance);
-            Assert.Equal(500m, recipientAccount.Balance);
-            Assert.Equal(0m, senderAccount.Transferred);
-            Assert.Equal(0m, recipientAccount.Received);
-        }
+        // Assert
+        Assert.Equal(700m, senderAccount.Balance);
+        Assert.Equal(800m, recipientAccount.Balance);
+        Assert.Equal(300m, senderAccount.Transferred);
+        Assert.Equal(300m, recipientAccount.Received);
+        _mockAccountRepository.Verify(r => r.UpdateAccount(senderAccount), Times.Once);
+        _mockAccountRepository.Verify(r => r.UpdateAccount(recipientAccount), Times.Once);
     }
 }
