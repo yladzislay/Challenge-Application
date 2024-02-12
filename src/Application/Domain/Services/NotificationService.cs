@@ -88,13 +88,18 @@ namespace Application.Domain.Services
                               + $"-[Notifying user]: {emailAddress}");
         }
 
-        public void NotifyTransferSuccess(string emailAddress, decimal amount)
+        public void NotifyTransferSuccessForSender(string emailAddress, decimal amount)
         {
-            Console.WriteLine("[Notification]: Transfer successful!"
-                              + Environment.NewLine
-                              + $"-[Amount transferred]: {amount}"
-                              + Environment.NewLine
-                              + $"-[Notifying user]: {emailAddress}");
+            Console.WriteLine($"[Notification]: Transfer of {amount} was successful. Amount debited from your account.");
+            Console.WriteLine($"-[Amount]: {amount}");
+            Console.WriteLine($"-[Recipient email]: {emailAddress}");
+        }
+
+        public void NotifyTransferSuccessForRecipient(string emailAddress, decimal amount)
+        {
+            Console.WriteLine($"[Notification]: Transfer of {amount} was successful. Amount credited to your account.");
+            Console.WriteLine($"-[Amount]: {amount}");
+            Console.WriteLine($"-[Sender email]: {emailAddress}");
         }
 
         public void NotifyWithdrawalFailure(string emailAddress, string errorMessage)

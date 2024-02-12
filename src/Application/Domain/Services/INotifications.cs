@@ -13,7 +13,9 @@ namespace Application.Domain.Services
 
         void NotifyWithdrawalSuccess(string emailAddress, decimal amount);
         void NotifyDepositSuccess(string emailAddress, decimal amount);
-        void NotifyTransferSuccess(string emailAddress, decimal amount);
+        
+        void NotifyTransferSuccessForSender(string emailAddress, decimal amount);
+        void NotifyTransferSuccessForRecipient(string emailAddress, decimal amount);
 
         void NotifyWithdrawalFailure(string emailAddress, string errorMessage);
         void NotifyDepositFailure(string emailAddress, string errorMessage);
