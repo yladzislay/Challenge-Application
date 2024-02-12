@@ -14,7 +14,8 @@ public class AccountOperationsServiceTests
     public AccountOperationsServiceTests()
     {
         _mockAccountRepository = new Mock<IAccountRepository>();
-        _accountOperations = new AccountOperationsService(_mockAccountRepository.Object);
+        Mock<INotifications> mockNotificationsService = new();
+        _accountOperations = new AccountOperationsService(_mockAccountRepository.Object, mockNotificationsService.Object);
     }
 
     [Fact]
