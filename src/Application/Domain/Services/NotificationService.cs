@@ -6,98 +6,115 @@ namespace Application.Domain.Services
     {
         private readonly static string NotificationTemplate = "[Notification]: {0}" 
                                                               + Environment.NewLine
-                                                              + "---[Details]: {1}" 
+                                                              + "---[Message]: {1}" 
                                                               + Environment.NewLine
                                                               + "--[For user]: {2}";
 
+        private void Notify(string notification, string message, string emailAddress)
+        {
+            Console.WriteLine(NotificationTemplate, notification, message, emailAddress);
+        }
+
         public void NotifyApproachingDepositLimit(string emailAddress, decimal currentDepositAmount, decimal limit)
         {
-            var message = $"Approaching deposit limit! Current deposit amount: {currentDepositAmount}, Limit: {limit}";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Approaching deposit limit!";
+            var message = $"Current deposit amount: {currentDepositAmount}, Limit: {limit}";
+            Notify(notification, message, emailAddress);
         }
 
         public void NotifyExceededDepositLimit(string emailAddress, decimal currentDepositAmount, decimal limit)
         {
-            var message = $"Exceeded deposit limit! Current deposit amount: {currentDepositAmount}, Limit: {limit}";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Exceeded deposit limit!";
+            var message = $"Current deposit amount: {currentDepositAmount}, Limit: {limit}";
+            Notify(notification, message, emailAddress);
         }
 
         public void NotifyApproachingWithdrawLimit(string emailAddress, decimal currentWithdrawAmount, decimal limit)
         {
-            var message = $"Approaching withdraw limit! Current withdraw amount: {currentWithdrawAmount}, Limit: {limit}";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Approaching withdraw limit!";
+            var message = $"Current withdraw amount: {currentWithdrawAmount}, Limit: {limit}";
+            Notify(notification, message, emailAddress);
         }
 
         public void NotifyExceededWithdrawLimit(string emailAddress, decimal currentWithdrawAmount, decimal limit)
         {
-            var message = $"Exceeded withdraw limit! Current withdraw amount: {currentWithdrawAmount}, Limit: {limit}";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Exceeded withdraw limit!";
+            var message = $"Current withdraw amount: {currentWithdrawAmount}, Limit: {limit}";
+            Notify(notification, message, emailAddress);
         }
 
         public void NotifyApproachingTransferLimit(string emailAddress, decimal currentTransferAmount, decimal limit)
         {
-            var message = $"Approaching transfer limit! Current transfer amount: {currentTransferAmount}, Limit: {limit}";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Approaching transfer limit!";
+            var message = $"Current transfer amount: {currentTransferAmount}, Limit: {limit}";
+            Notify(notification, message, emailAddress);
         }
 
         public void NotifyExceededTransferLimit(string emailAddress, decimal currentTransferAmount, decimal limit)
         {
-            var message = $"Exceeded transfer limit! Current transfer amount: {currentTransferAmount}, Limit: {limit}";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Exceeded transfer limit!";
+            var message = $"Current transfer amount: {currentTransferAmount}, Limit: {limit}";
+            Notify(notification, message, emailAddress);
         }
 
         public void NotifyApproachingReceiveLimit(string emailAddress, decimal currentReceiveAmount, decimal limit)
         {
-            var message = $"Approaching receive limit! Current receive amount: {currentReceiveAmount}, Limit: {limit}";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Approaching receive limit!";
+            var message = $"Current receive amount: {currentReceiveAmount}, Limit: {limit}";
+            Notify(notification, message, emailAddress);
         }
 
         public void NotifyExceededReceiveLimit(string emailAddress, decimal currentReceiveAmount, decimal limit)
         {
-            var message = $"Exceeded receive limit! Current receive amount: {currentReceiveAmount}, Limit: {limit}";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Exceeded receive limit!";
+            var message = $"Current receive amount: {currentReceiveAmount}, Limit: {limit}";
+            Notify(notification, message, emailAddress);
         }
 
         public void NotifyWithdrawalSuccess(string emailAddress, decimal amount)
         {
-            var message = $"Withdrawal successful! Amount withdrawn: {amount}";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Withdrawal successful!";
+            var message = $"Amount withdrawn: {amount}";
+            Notify(notification, message, emailAddress);
         }
 
         public void NotifyDepositSuccess(string emailAddress, decimal amount)
         {
-            var message = $"Deposit successful! Amount deposited: {amount}";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Deposit successful!";
+            var message = $"Amount deposited: {amount}";
+            Notify(notification, message, emailAddress);
         }
 
         public void NotifyTransferSuccessForSender(string emailAddress, decimal amount)
         {
-            var message = $"Transfer of {amount} was successful. Amount debited from your account.";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Transfer successful (sender)!";
+            var message = $"Amount: {amount} debited from your account.";
+            Notify(notification, message, emailAddress);
         }
 
         public void NotifyTransferSuccessForRecipient(string emailAddress, decimal amount)
         {
-            var message = $"Transfer of {amount} was successful. Amount credited to your account.";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Transfer successful (recipient)!";
+            var message = $"Amount: {amount} credited to your account.";
+            Notify(notification, message, emailAddress);
         }
 
         public void NotifyWithdrawalFailure(string emailAddress, string errorMessage)
         {
-            var message = $"Withdrawal failed! Error message: {errorMessage}";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Withdrawal failed!";
+            Notify(notification, $"Error message: {errorMessage}", emailAddress);
         }
 
         public void NotifyDepositFailure(string emailAddress, string errorMessage)
         {
-            var message = $"Deposit failed! Error message: {errorMessage}";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Deposit failed!";
+            Notify(notification, $"Error message: {errorMessage}", emailAddress);
         }
 
         public void NotifyTransferFailure(string emailAddress, string errorMessage)
         {
-            var message = $"Transfer failed! Error message: {errorMessage}";
-            Console.WriteLine(NotificationTemplate, message, emailAddress);
+            const string notification = "Transfer failed!";
+            Notify(notification, $"Error message: {errorMessage}", emailAddress);
         }
     }
 }
