@@ -1,0 +1,1 @@
+## How to migrate current solution to DDD?
